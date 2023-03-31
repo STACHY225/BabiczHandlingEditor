@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Babicz Handling Editor</title>
+    <script src="script.js" defer></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: monospace;
+            font-size: 1.5vh;
+        }
+        #container {
+            position: absolute;
+            left: 5vw;
+            top: 2.5vh;
+            max-height: 95vh;
+            overflow: hidden scroll;
+            background-color: rgba(58, 58, 58, 0.75);
+            border-radius: .75rem;
+            display: none;
+        }
+        table {
+            position: relative;
+            border-collapse: collapse;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: linear-gradient(75deg, rgba(81, 151, 216, 0.965), rgba(117, 175, 230, 0.965), rgba(81, 151, 216, 0.965), rgba(110, 167, 219, 0.965));
+            font-weight: bold;
+            text-align: center;
+        }
+        td {
+            padding: .35em;
+        }
+        tbody {
+            color: rgb(235, 235, 235);
+        }
+        ::-webkit-scrollbar {
+            width: 0.75em;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgb(24, 30, 36);
+            border-radius: 0 .75rem .75rem 0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(81, 151, 216, 0.965);
+            border-radius: 0 .75rem .75rem 0;
+            border: .125em solid rgb(24, 30, 36);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgb(105, 171, 233);
+        }
+        .value {
+            user-select: none;
+        }
+        .input {
+            background-color: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            border-bottom: 0.1em solid #bab1c2;
+            box-sizing: border-box;
+            display: inline-block;
+            user-select: text;
+        }
+        .short {
+            max-width: 5vw;
+        }
+        .button {
+            display: inline-block;
+            font-size: 1.85vh;
+            font-weight: bolder;
+            color: white;
+            margin-left: 1em;
+        }
+        .button:hover {
+            cursor: pointer;
+            background: radial-gradient(rgba(255, 255, 255, 0.5), transparent);
+            border-radius: 40%;
+        }
+        .input:focus {
+            border-bottom: 0.1em solid #69abe9;
+        }
+        .input::placeholder {
+            color: #bab1c2;
+        }
+        .input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button{
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #export {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding-right: .75em;
+            padding-left: .5em;
+            z-index: 3;
+            border-bottom: 0.1em solid #bab1c2;
+            border-left: 0.1em solid #bab1c2;
+            border-bottom-left-radius: .5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #export:hover {
+            background-color: #bab1c2;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <table id="cont_table">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Value</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>fMass</td><td><div class="value"><input id="fMass" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fMass')">+</div><div class="button substract" onclick="Substract('fMass')">-</div></div></td></tr><tr><td>fInitialDragCoeff</td><td><div class="value"><input id="fInitialDragCoeff" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fInitialDragCoeff')">+</div><div class="button substract" onclick="Substract('fInitialDragCoeff')">-</div></div></td></tr><tr><td>fPercentSubmerged</td><td><div class="value"><input id="fPercentSubmerged" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fPercentSubmerged')">+</div><div class="button substract" onclick="Substract('fPercentSubmerged')">-</div></div></td></tr><tr><tr><td>fDownForceModifier</td><td><div class="value"><input id="fDownForceModifier" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fDownForceModifier')">+</div><div class="button substract" onclick="Substract('fDownForceModifier')">-</div></div></td></tr><tr><td>vecCentreOfMassOffset</td><td><div class="value">x=<input id="vecCentreOfMassOffset_x" placeholder="0.0" class="input short" type="number" value="0.0">y=<input id="vecCentreOfMassOffset_y" placeholder="0.0" class="input short" type="number" value="0.0">z=<input id="vecCentreOfMassOffset_z" placeholder="0.0" class="input short" type="number" value="0.0"></div></td></tr><tr><td>vecInertiaMultiplier</td><td><div class="value">x=<input id="vecInertiaMultiplier_x" placeholder="0.0" class="input short" type="number" value="0.0">y=<input id="vecInertiaMultiplier_y" placeholder="0.0" class="input short" type="number" value="0.0">z=<input id="vecInertiaMultiplier_z" placeholder="0.0" class="input short" type="number" value="0.0"></div></td></tr><tr><td>fDriveBiasFront</td><td><div class="value"><input id="fDriveBiasFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fDriveBiasFront')">+</div><div class="button substract" onclick="Substract('fDriveBiasFront')">-</div></div></td></tr><tr><td>nInitialDriveGears</td><td><div class="value"><input id="nInitialDriveGears" placeholder="0" class="input" type="number" value="0"><div class="button add" onclick="Add('nInitialDriveGears')">+</div><div class="button substract" onclick="Substract('nInitialDriveGears')">-</div></div></td></tr><tr><td>fInitialDriveForce</td><td><div class="value"><input id="fInitialDriveForce" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fInitialDriveForce')">+</div><div class="button substract" onclick="Substract('fInitialDriveForce')">-</div></div></td></tr><tr><td>fDriveInertia</td><td><div class="value"><input id="fDriveInertia" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fDriveInertia')">+</div><div class="button substract" onclick="Substract('fDriveInertia')">-</div></div></td></tr><tr><td>fClutchChangeRateScaleUpShift</td><td><div class="value"><input id="fClutchChangeRateScaleUpShift" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fClutchChangeRateScaleUpShift')">+</div><div class="button substract" onclick="Substract('fClutchChangeRateScaleUpShift')">-</div></div></td></tr><tr><td>fClutchChangeRateScaleDownShift</td><td><div class="value"><input id="fClutchChangeRateScaleDownShift" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fClutchChangeRateScaleDownShift')">+</div><div class="button substract" onclick="Substract('fClutchChangeRateScaleDownShift')">-</div></div></td></tr><tr><td>fInitialDriveMaxFlatVel</td><td><div class="value"><input id="fInitialDriveMaxFlatVel" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fInitialDriveMaxFlatVel')">+</div><div class="button substract" onclick="Substract('fInitialDriveMaxFlatVel')">-</div></div></td></tr><tr><td>fBrakeForce</td><td><div class="value"><input id="fBrakeForce" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fBrakeForce')">+</div><div class="button substract" onclick="Substract('fBrakeForce')">-</div></div></td></tr><tr><td>fBrakeBiasFront</td><td><div class="value"><input id="fBrakeBiasFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fBrakeBiasFront')">+</div><div class="button substract" onclick="Substract('fBrakeBiasFront')">-</div></div></td></tr><tr><td>fHandBrakeForce</td><td><div class="value"><input id="fHandBrakeForce" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fHandBrakeForce')">+</div><div class="button substract" onclick="Substract('fHandBrakeForce')">-</div></div></td></tr><tr><td>fSteeringLock</td><td><div class="value"><input id="fSteeringLock" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSteeringLock')">+</div><div class="button substract" onclick="Substract('fSteeringLock')">-</div></div></td></tr><tr><td>fTractionCurveMax</td><td><div class="value"><input id="fTractionCurveMax" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionCurveMax')">+</div><div class="button substract" onclick="Substract('fTractionCurveMax')">-</div></div></td></tr><tr><td>fTractionCurveMin</td><td><div class="value"><input id="fTractionCurveMin" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionCurveMin')">+</div><div class="button substract" onclick="Substract('fTractionCurveMin')">-</div></div></td></tr><tr><td>fTractionCurveLateral</td><td><div class="value"><input id="fTractionCurveLateral" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionCurveLateral')">+</div><div class="button substract" onclick="Substract('fTractionCurveLateral')">-</div></div></td></tr><tr><td>fTractionSpringDeltaMax</td><td><div class="value"><input id="fTractionSpringDeltaMax" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionSpringDeltaMax')">+</div><div class="button substract" onclick="Substract('fTractionSpringDeltaMax')">-</div></div></td></tr><tr><td>fLowSpeedTractionLossMult</td><td><div class="value"><input id="fLowSpeedTractionLossMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fLowSpeedTractionLossMult')">+</div><div class="button substract" onclick="Substract('fLowSpeedTractionLossMult')">-</div></div></td></tr><tr><td>fCamberStiffnesss</td><td><div class="value"><input id="fCamberStiffnesss" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fCamberStiffnesss')">+</div><div class="button substract" onclick="Substract('fCamberStiffnesss')">-</div></div></td></tr><tr><td>fTractionBiasFront</td><td><div class="value"><input id="fTractionBiasFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionBiasFront')">+</div><div class="button substract" onclick="Substract('fTractionBiasFront')">-</div></div></td></tr><tr><td>fTractionLossMult</td><td><div class="value"><input id="fTractionLossMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fTractionLossMult')">+</div><div class="button substract" onclick="Substract('fTractionLossMult')">-</div></div></td></tr><tr><td>fSuspensionForce</td><td><div class="value"><input id="fSuspensionForce" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionForce')">+</div><div class="button substract" onclick="Substract('fSuspensionForce')">-</div></div></td></tr><tr><td>fSuspensionCompDamp</td><td><div class="value"><input id="fSuspensionCompDamp" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionCompDamp')">+</div><div class="button substract" onclick="Substract('fSuspensionCompDamp')">-</div></div></td></tr><tr><td>fSuspensionReboundDamp</td><td><div class="value"><input id="fSuspensionReboundDamp" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionReboundDamp')">+</div><div class="button substract" onclick="Substract('fSuspensionReboundDamp')">-</div></div></td></tr><tr><td>fSuspensionUpperLimit</td><td><div class="value"><input id="fSuspensionUpperLimit" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionUpperLimit')">+</div><div class="button substract" onclick="Substract('fSuspensionUpperLimit')">-</div></div></td></tr><tr><td>fSuspensionLowerLimit</td><td><div class="value"><input id="fSuspensionLowerLimit" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionLowerLimit')">+</div><div class="button substract" onclick="Substract('fSuspensionLowerLimit')">-</div></div></td></tr><tr><td>fSuspensionRaise</td><td><div class="value"><input id="fSuspensionRaise" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionRaise')">+</div><div class="button substract" onclick="Substract('fSuspensionRaise')">-</div></div></td></tr><tr><td>fSuspensionBiasFront</td><td><div class="value"><input id="fSuspensionBiasFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSuspensionBiasFront')">+</div><div class="button substract" onclick="Substract('fSuspensionBiasFront')">-</div></div></td></tr><tr><td>fAntiRollBarForce</td><td><div class="value"><input id="fAntiRollBarForce" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fAntiRollBarForce')">+</div><div class="button substract" onclick="Substract('fAntiRollBarForce')">-</div></div></td></tr><tr><td>fAntiRollBarBiasFront</td><td><div class="value"><input id="fAntiRollBarBiasFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fAntiRollBarBiasFront')">+</div><div class="button substract" onclick="Substract('fAntiRollBarBiasFront')">-</div></div></td></tr><tr><td>fRollCentreHeightFront</td><td><div class="value"><input id="fRollCentreHeightFront" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fRollCentreHeightFront')">+</div><div class="button substract" onclick="Substract('fRollCentreHeightFront')">-</div></div></td></tr><tr><td>fRollCentreHeightRear</td><td><div class="value"><input id="fRollCentreHeightRear" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fRollCentreHeightRear')">+</div><div class="button substract" onclick="Substract('fRollCentreHeightRear')">-</div></div></td></tr><tr><td>fCollisionDamageMult</td><td><div class="value"><input id="fCollisionDamageMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fCollisionDamageMult')">+</div><div class="button substract" onclick="Substract('fCollisionDamageMult')">-</div></div></td></tr><tr><td>fWeaponDamageMult</td><td><div class="value"><input id="fWeaponDamageMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fWeaponDamageMult')">+</div><div class="button substract" onclick="Substract('fWeaponDamageMult')">-</div></div></td></tr><tr><td>fDeformationDamageMult</td><td><div class="value"><input id="fDeformationDamageMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fDeformationDamageMult')">+</div><div class="button substract" onclick="Substract('fDeformationDamageMult')">-</div></div></td></tr><tr><td>fEngineDamageMult</td><td><div class="value"><input id="fEngineDamageMult" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fEngineDamageMult')">+</div><div class="button substract" onclick="Substract('fEngineDamageMult')">-</div></div></td></tr><tr><td>fPetrolTankVolume</td><td><div class="value"><input id="fPetrolTankVolume" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fPetrolTankVolume')">+</div><div class="button substract" onclick="Substract('fPetrolTankVolume')">-</div></div></td></tr><tr><td>fOilVolume</td><td><div class="value"><input id="fOilVolume" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fOilVolume')">+</div><div class="button substract" onclick="Substract('fOilVolume')">-</div></div></td></tr><tr><td>fSeatOffsetDistX</td><td><div class="value"><input id="fSeatOffsetDistX" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSeatOffsetDistX')">+</div><div class="button substract" onclick="Substract('fSeatOffsetDistX')">-</div></div></td></tr><tr><td>fSeatOffsetDistY</td><td><div class="value"><input id="fSeatOffsetDistY" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSeatOffsetDistY')">+</div><div class="button substract" onclick="Substract('fSeatOffsetDistY')">-</div></div></td></tr><tr><td>fSeatOffsetDistZ</td><td><div class="value"><input id="fSeatOffsetDistZ" placeholder="0.0" class="input" type="number" value="0.0"><div class="button add" onclick="Add('fSeatOffsetDistZ')">+</div><div class="button substract" onclick="Substract('fSeatOffsetDistZ')">-</div></div></td></tr><tr><td>nMonetaryValue</td><td><div class="value"><input id="nMonetaryValue" placeholder="0" class="input" type="number" value="0"><div class="button add" onclick="Add('nMonetaryValue')">+</div><div class="button substract" onclick="Substract('nMonetaryValue')">-</div></div></td></tr><tr><td>strModelFlags</td><td><div class="value"><input id="strModelFlags" placeholder="0" class="input" type="number" value="0"><div class="button add" onclick="Add('strModelFlags')">+</div><div class="button substract" onclick="Substract('strModelFlags')">-</div></div></td></tr><tr><td>strHandlingFlags</td><td><div class="value"><input id="strHandlingFlags" placeholder="0" class="input" type="number" value="0"><div class="button add" onclick="Add('strHandlingFlags')">+</div><div class="button substract" onclick="Substract('strHandlingFlags')">-</div></div></td></tr><tr><td>strModelFlags</td><td><div class="value"><input id="strModelFlags" placeholder="0" class="input" type="number" value="0"><div class="button add" onclick="Add('strModelFlags')">+</div><div class="button substract" onclick="Substract('strModelFlags')">-</div></div></td></tr>
+            </tbody>
+        </table>
+        <div id="title" style="width: 100%; text-align: center; color: #bab1c2; margin: 0.2vh;">© Babicz Handling Editor</div>
+        <div id="export" onclick="Export()">Export</div>
+    </div>
+</body>
+</html>
