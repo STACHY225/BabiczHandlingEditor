@@ -1,10 +1,3 @@
---------------------------------------------------------------
--->                       Babicz                           <--
---        © Copyright Babicz (stachy225@gmail.com)          --
---      Autorstwa Babicz, zakazuje się go kopiowania,       --
---      upubliczniania oraz używania bez licencji.          --
---             Kontakt stachy225@gmail.com                  --
---------------------------------------------------------------
 fx_version "cerulean"
 game "gta5"
 lua54 "yes"
