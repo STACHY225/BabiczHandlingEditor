@@ -321,7 +321,7 @@ RegisterNUICallback("update", function(data, cb)
 end)
 
 RegisterNUICallback("change", function(data, cb)
-    if data.target and handling[data.target] and tonumber(data.value) then
+    if data.target and handling[data.target] then
         local value = handling[data.target]
         if data.type == "add" then
             return cb(UpdateHandling(data.target, value + values[data.target].change))
