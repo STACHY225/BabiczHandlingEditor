@@ -2,7 +2,7 @@ fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 author "Babicz"
-version "1.0.0"
+version "1.1.0"
 description "Handling Editor"
 
 client_script "BabiczHandlingEditor_cl.lua"

@@ -1,4 +1,4 @@
-var handlingTemplate = `<fMass value="fMass_value"/>
+const handlingTemplate = `<fMass value="fMass_value"/>
 <fInitialDragCoeff value="fInitialDragCoeff_value"/>
 <fDownForceModifier value="fDownForceModifier_value"/>
 <fPercentSubmerged value="fPercentSubmerged_value"/>
@@ -44,37 +44,34 @@ var handlingTemplate = `<fMass value="fMass_value"/>
 <fSeatOffsetDistY value="fSeatOffsetDistY_value"/>
 <fSeatOffsetDistZ value="fSeatOffsetDistZ_value"/>
 <nMonetaryValue value="nMonetaryValue_value"/>`;
-var resName = "";
-if(typeof GetParentResourceName == "function") resName = GetParentResourceName();
+const resName = typeof GetParentResourceName == "function" ? GetParentResourceName() : "BabiczHandlingEditor",
+elements = {};
 
-var elements = {};
-const Container = document.getElementById("container");
-
-async function Post(name, data) {
-    try {
-        let resp = await fetch(`https://${resName}/${name}`, {
+async function Post(name, data){
+    try{
+        const resp = await fetch(`https://${resName}/${name}`, {
             method: "POST",
             mode: "same-origin",
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json; charset=UTF-8"
             },
-            body: JSON.stringify(data || {})
+            body: data ? JSON.stringify(data) : "{}"
         });
         if(!resp.ok){
             return;
         }
         return await resp.json();
-    } catch (err) {}
+    }catch(err){}
 }
 
 window.onload = function(){
-    let names = ["fBrakeForce", "fDownForceModifier", "fPercentSubmerged", "fBrakeBiasFront", "fCollisionDamageMult", "fDriveInertia", "vecInertiaMultiplier_x", "vecInertiaMultiplier_y", "vecInertiaMultiplier_z", "fInitialDriveForce", "fDriveBiasFront", "fSeatOffsetDistZ", "fSuspensionCompDamp", "fTractionLossMult", "fTractionSpringDeltaMax", "fSuspensionBiasFront", "vecCentreOfMassOffset_x", "vecCentreOfMassOffset_y", "vecCentreOfMassOffset_z", "fRollCentreHeightRear", "fMass", "fInitialDriveMaxFlatVel", "nInitialDriveGears", "strHandlingFlags", "strModelFlags", "fClutchChangeRateScaleUpShift", "nMonetaryValue", "fTractionBiasFront", "fSteeringLock", "fSuspensionUpperLimit", "fSeatOffsetDistX", "fAntiRollBarBiasFront", "fEngineDamageMult", "fOilVolume", "fTractionCurveLateral", "fSuspensionRaise", "fDeformationDamageMult", "fWeaponDamageMult", "fCamberStiffnesss", "fTractionCurveMin", "fSuspensionForce", "fAntiRollBarForce", "fHandBrakeForce", "fSuspensionReboundDamp", "fLowSpeedTractionLossMult", "fRollCentreHeightFront", "fPetrolTankVolume", "fClutchChangeRateScaleDownShift", "fTractionCurveMax", "fInitialDragCoeff", "fSeatOffsetDistY", "fSuspensionLowerLimit"];
-    names.forEach(name => {
-        let element = document.getElementById(name);
+    const names = ["fBrakeForce", "fDownForceModifier", "fPercentSubmerged", "fBrakeBiasFront", "fCollisionDamageMult", "fDriveInertia", "vecInertiaMultiplier_x", "vecInertiaMultiplier_y", "vecInertiaMultiplier_z", "fInitialDriveForce", "fDriveBiasFront", "fSeatOffsetDistZ", "fSuspensionCompDamp", "fTractionLossMult", "fTractionSpringDeltaMax", "fSuspensionBiasFront", "vecCentreOfMassOffset_x", "vecCentreOfMassOffset_y", "vecCentreOfMassOffset_z", "fRollCentreHeightRear", "fMass", "fInitialDriveMaxFlatVel", "nInitialDriveGears", "strHandlingFlags", "strModelFlags", "fClutchChangeRateScaleUpShift", "nMonetaryValue", "fTractionBiasFront", "fSteeringLock", "fSuspensionUpperLimit", "fSeatOffsetDistX", "fAntiRollBarBiasFront", "fEngineDamageMult", "fOilVolume", "fTractionCurveLateral", "fSuspensionRaise", "fDeformationDamageMult", "fWeaponDamageMult", "fCamberStiffnesss", "fTractionCurveMin", "fSuspensionForce", "fAntiRollBarForce", "fHandBrakeForce", "fSuspensionReboundDamp", "fLowSpeedTractionLossMult", "fRollCentreHeightFront", "fPetrolTankVolume", "fClutchChangeRateScaleDownShift", "fTractionCurveMax", "fInitialDragCoeff", "fSeatOffsetDistY", "fSuspensionLowerLimit"];
+    names.forEach(function(name){
+        const element = document.getElementById(name);
         elements[name] = element;
         element.addEventListener("input", function(){
-            let value = Number(element.value);
+            const value = Number(element.value);
             if(value)
                 Post("update", {
                     target: name,
@@ -85,14 +82,14 @@ window.onload = function(){
 }
 
 function Add(name){
-    let element = elements[name];
+    const element = elements[name];
     if(element){
-        let val = Number(element.value);
+        const val = Number(element.value);
         if(typeof val == "number"){
             Post("change", {
                 type: "add",
                 target: name
-            }).then(result => {
+            }).then(function(result){
                 if(result!=false){
                     element.value = result;
                 }
@@ -102,14 +99,14 @@ function Add(name){
 }
 
 function Substract(name){
-    let element = elements[name];
+    const element = elements[name];
     if(element){
-        let val = Number(element.value);
+        const val = Number(element.value);
         if(typeof val == "number"){
             Post("change", {
                 type: "substract",
                 target: name
-            }).then(result => {
+            }).then(function(result){
                 if(result!=false){
                     element.value = result;
                 }
@@ -119,11 +116,11 @@ function Substract(name){
 }
 
 function Export(){
-    let result = handlingTemplate.toString();
-    for (const k in elements) {
+    let result = handlingTemplate;
+    for (const k in elements){
         result = result.replaceAll(`${k}_value`, elements[k].value);
     }
-    let element = document.createElement("textarea");
+    const element = document.createElement("textarea");
     element.value = result;
     document.body.appendChild(element);
     element.select();
@@ -134,19 +131,18 @@ function Export(){
 window.addEventListener("message", function(event){
     let e = event.data;
     if(e.action == "show"){
-        for (const k in (e.handling || {})) {
-            if(elements[k])
-                elements[k].value = e.handling[k];
+        for(const k in (e.handling || {})){
+            if(elements[k])elements[k].value = e.handling[k];
         }
-        Container.style.display = "block";
-    }else if(e.action == "hide") {
-        Container.style.display = "none";
+        container.style.display = "block";
+    }else if(e.action == "hide"){
+        container.style.display = "none";
     }
 })
 
 window.addEventListener("keydown", function(e){
     if(e.key=="Escape"){
-        Container.style.display = "none";
+        container.style.display = "none";
         Post("close");
     }
 })

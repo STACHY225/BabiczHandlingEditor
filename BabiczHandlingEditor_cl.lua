@@ -7,10 +7,14 @@ local values = {
         type = "float",
         change = 1
     },
-    -- fDownForceModifier = {
-    --     type = "float",
-    --     change = 0.05
-    -- },
+    fDownForceModifier = {
+        type = "float",
+        change = 0.05
+    },
+    fPopUpLightRotation = {
+        type = "float",
+        change = 0.05
+    },
     fPercentSubmerged = {
         type = "float",
         change = 5.0
@@ -167,6 +171,10 @@ local values = {
         type = "float",
         change = 1.0
     },
+    fPetrolConsumptionRate = {
+        type = "float",
+        change = 0.1
+    },
     fSeatOffsetDistX = {
         type = "float",
         change = 1.0
@@ -185,7 +193,7 @@ local values = {
     }
 }
 local class = "CHandlingData"
-local accuracy = 10
+local accuracy = 15 -- number of digits after the decimal point
 local opened = false
 local handling, currentVehicle, handlingName, lastModel = {}, nil, false, nil
 
@@ -277,41 +285,43 @@ RegisterCommand("*BabiczHandlingEditor", function()
 end)
 RegisterKeyMapping("*BabiczHandlingEditor", "Handling Editor", "keyboard", "LSHIFT")
 
-local UpdateHandling = function(target, value)
+local UpdateHandling = function(field, value)
+    local target = field:gsub("_x", ""):gsub("_y", ""):gsub("_z", "")
+    if not values[target] then return value end
     if values[target].type == "int" then
         value = math.floor(value)
-        handling[target] = value
+        handling[field] = value
         if handlingName then
             SetHandlingInt(handlingName, class, target, value)
         end
         SetVehicleHandlingInt(currentVehicle, class, target, value)
     elseif values[target].type == "float" then
         value = value*1.0
-        handling[target] = value
+        handling[field] = value
         if handlingName then
             SetHandlingFloat(handlingName, class, target, value)
         end
         SetVehicleHandlingFloat(currentVehicle, class, target, value)
     elseif values[target].type == "vector" then
-        handling[target] = value
-        local target = target:gsub("_x", "")
+        handling[field] = value
+        local vec = vector3(handling[target.."_x"]*1.0, handling[target.."_y"]*1.0, handling[target.."_z"]*1.0)
         if handlingName then
-            SetHandlingVector(handlingName, class, target, vector3(handling[k.."_x"], handling[k.."_y"], handling[k.."_z"]))
+            SetHandlingVector(handlingName, class, target, vec)
         end
-        SetVehicleHandlingVector(currentVehicle, class, target, vector3(handling[k.."_x"], handling[k.."_y"], handling[k.."_z"]))
+        SetVehicleHandlingVector(currentVehicle, class, target, vec)
     end
-    return tostring(handling[target])
+    return tostring(handling[field])
 end
 
 RegisterNUICallback("update", function(data, cb)
-    if data.target and values[data.target] and tonumber(data.value) and handling[data.target] then
+    if data.target and handling[data.target] and tonumber(data.value) then
         UpdateHandling(data.target, data.value)
     end
     cb(true)
 end)
 
 RegisterNUICallback("change", function(data, cb)
-    if data.target and values[data.target] and handling[data.target] then
+    if data.target and handling[data.target] and tonumber(data.value) then
         local value = handling[data.target]
         if data.type == "add" then
             return cb(UpdateHandling(data.target, value + values[data.target].change))
