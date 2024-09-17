@@ -7,10 +7,11 @@ local values = {
         type = "float",
         change = 1
     },
-    fDownForceModifier = {
-        type = "float",
-        change = 0.05
-    },
+    -- apparently this value does not exist on some vehicles
+    -- fDownForceModifier = {
+    --     type = "float",
+    --     change = 0.05
+    -- },
     fPopUpLightRotation = {
         type = "float",
         change = 0.05
@@ -207,7 +208,9 @@ local ShowNotification = function(text)
     DrawNotification(true, false)
 end
 
-RegisterCommand("handling", function(_, args)
+local allowed = false
+RegisterNetEvent("BabiczHandlingEditor", function(args)
+    allowed = true
     if opened then
         SendNUIMessage({
             action = "hide"
@@ -243,14 +246,13 @@ RegisterCommand("handling", function(_, args)
             SetNuiFocus(true, true)
             opened = true
         else
-            ShowNotification("Vehicle not found!")
+            -- ShowNotification("Vehicle not found!")
         end
     end
-end, false)
-
+end)
 
 RegisterCommand("*BabiczHandlingEditor", function()
-    if not opened then
+    if allowed and not opened then
         local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
         if DoesEntityExist(vehicle) then
             if GetEntityModel(vehicle) ~= lastModel then

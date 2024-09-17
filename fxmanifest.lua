@@ -7,6 +7,8 @@ description "Handling Editor"
 
 client_script "BabiczHandlingEditor_cl.lua"
 
+server_script "BabiczHandlingEditor_sv.lua"
+
 files {
     "ui/script.js",
     "ui/index.html"
